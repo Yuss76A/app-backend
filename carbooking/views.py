@@ -10,7 +10,7 @@ from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 
 from .models import User, Car, BookedDate
 from .serializers import CarSerializer, CarImageSerializer, BookedDateSerializer, UserSerializer
-from .permissions import IsAdminOrReadOnly
+# from .permissions import IsAdminOrReadOnly
 
 # API root endpoint
 @api_view(['GET'])
@@ -45,7 +45,7 @@ class CarList(generics.ListCreateAPIView):
     """
     queryset = Car.objects.all()
     serializer_class = CarSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
 class CarDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -58,7 +58,7 @@ class CarDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Car.objects.all()
     serializer_class = CarSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
 # Booked Dates views
 class BookedDateList(generics.ListCreateAPIView):
@@ -99,7 +99,7 @@ class BookedDateDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = BookedDate.objects.all()
     serializer_class = BookedDateSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
 # User views
 class UserList(generics.ListAPIView):
