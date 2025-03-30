@@ -20,5 +20,6 @@ from carbooking.views import api_root
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('carbooking/', include('carbooking.urls')),
+    path('api-auth/', include('rest_framework.urls')),
     path('', api_root, name='api-root'),
 ]
