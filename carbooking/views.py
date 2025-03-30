@@ -65,7 +65,7 @@ class BookedDateList(generics.ListCreateAPIView):
     """
     API view to list and create booked dates.
 
-    Handles HTTP GET for listing all booked dates and POST for creating a new booking.
+    Handles HTTP GET for listing all booked dates or user-specific dates, and POST for creating a new booking.
 
     Permissions:
         Authenticated users can create bookings; others can only read.
@@ -81,12 +81,15 @@ class BookedDateList(generics.ListCreateAPIView):
         Filters the queryset to only include dates booked by the logged-in user if they are not an admin.
 
         Returns:
-            QuerySet: The filtered queryset of booked dates.
+            QuerySet: The filtered queryset of booked dates for authenticated users.
         """
         user = self.request.user  
-        if not user.is_superuser and not user.is_staff:
-            return BookedDate.objects.filter(user=user)
-        return super().get_queryset()
+        if user.is_authenticated:
+            # Only return booked dates for the authenticated user.
+            if not user.is_superuser and not user.is_staff:
+                return BookedDate.objects.filter(user=user)
+        # If user is not authenticated or is an admin, return all booked dates or an empty queryset.
+        return BookedDate.objects.none()
 
 class BookedDateDetail(generics.RetrieveUpdateDestroyAPIView):
     """
