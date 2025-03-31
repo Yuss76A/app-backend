@@ -6,28 +6,30 @@ class ReviewSerializer(serializers.ModelSerializer):
     """
     Serializer for the Review model.
 
-    This serializer is used to convert Review instances to JSON format and 
-    vice versa for API communication. It automatically handles the inclusion
-    of necessary fields in review data, including relationships to car and user.
+    Converts Review instances to/from JSON format for API communication and validates the rating.
 
     Attributes:
-        Meta (class): Contains metadata about the serializer.
-            - model (class): The model associated with this serializer (Review).
-            - fields (list): A list of fields to include in the serialization.
-            - read_only_fields (list): A list of fields that should be read-only 
-              at the time of creation or update. Typically, the 'user' is set 
-              automatically to the authenticated user and 'created_at' is set to 
-              the timestamp of creation.
+        Meta (class): Metadata for the serializer, including fields and read-only fields.
 
-    Example:
-        To serialize or deserialize review data, you would create an instance 
-        of the serializer with validated data like so:
+    Methods:
+        validate_rating(value): Ensures that the rating is between 0 and 5. Raises a 
+        `ValidationError` if outside this range.
 
-        serializer = ReviewSerializer(data=request_data)
+    Example usage:
+        To create a new review:
+        ```python
+        serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)  # Automatically set the user
+            serializer.save(user=request.user)  # Automatically assign the authenticated user
+        ```
     """
     class Meta:
         model = Review
         fields = ['id', 'company', 'user', 'rating', 'comment', 'created_at']
         read_only_fields = ['user', 'created_at']
+
+    def validate_rating(self, value):
+        """Ensure the rating is between 0 and 5."""
+        if value < 0 or value > 5:
+            raise serializers.ValidationError("Rating must be between 0 and 5.")
+        return value
