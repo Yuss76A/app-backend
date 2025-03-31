@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 
 class Company(models.Model):
@@ -28,23 +29,34 @@ class Company(models.Model):
 
 class Review(models.Model):
     """
-    Represents a review for a car by a user.
+    Represents a review for a rental company.
 
     Attributes:
-        car (ForeignKey): The car that this review is associated with.
+        company (ForeignKey): The company being reviewed.
         user (ForeignKey): The user who wrote the review.
-        rating (IntegerField): A rating value, typically on a scale (e.g., 1 to 5) indicating the user's satisfaction.
-        comment (TextField): The detailed comment or feedback provided by the user regarding the car.
-        created_at (DateTimeField): A timestamp that records when the review was created, automatically set when the review is created.
+        rating (IntegerField): Rating from 0 to 5 for the company.
+        comment (TextField): Text feedback provided by the user.
+        created_at (DateTimeField): Timestamp for when the review was created.
 
     Methods:
-        __str__(): Returns a string representation of the review, indicating the car name and the user's full name.
+        clean(): Validates that the rating is between 0 and 5.
+        save(*args, **kwargs): Overrides save to ensure rating validation before saving.
     """
-    company = models.ForeignKey('carbooking.Car', on_delete=models.CASCADE, related_name='reviews')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField()
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def clean(self):
+        """Validate that rating is between 0 and 5."""
+        if self.rating < 0 or self.rating > 5:
+            raise ValidationError('Rating must be between 0 and 5.')
+
+    def save(self, *args, **kwargs):
+        """Override save to validate the rating before saving."""
+        self.clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"Review for {self.car.name} by {self.user.full_name}"
+        return f"Review for {self.company.name} by {self.user.full_name}, Rating: {self.rating}"
