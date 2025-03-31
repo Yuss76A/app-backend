@@ -40,7 +40,7 @@ class Review(models.Model):
     Methods:
         __str__(): Returns a string representation of the review, indicating the car name and the user's full name.
     """
-    car = models.ForeignKey('carbooking.Car', on_delete=models.CASCADE, related_name='reviews')
+    company = models.ForeignKey('carbooking.Car', on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField()
     comment = models.TextField()
