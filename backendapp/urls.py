@@ -19,8 +19,8 @@ from carbooking.views import api_root
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('reviews/', include('reviews.urls')),
     path('carbooking/', include('carbooking.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('reviews/', include('reviews.urls')),
     path('', api_root, name='api-root'),
 ]
