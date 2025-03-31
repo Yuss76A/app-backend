@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'carbooking',
     'rest_framework',
     'rest_framework.authtoken',
+    'reviews',
 ]
 
 MIDDLEWARE = [
