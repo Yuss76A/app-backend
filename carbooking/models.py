@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings 
 from cloudinary.models import CloudinaryField
 
+
 class Car(models.Model):
     """
     Represents a car available for rent in the rental car application.
@@ -29,7 +30,7 @@ class Car(models.Model):
         ('convertible', 'Convertible'),
         ('pickup', 'Pickup'),
     ]
-    
+
     # Choices for currency type; only Euro is available
     CURRENCY_TYPES = [
         ('EUR', 'EUR'),  # Only Euro
@@ -41,10 +42,10 @@ class Car(models.Model):
     currency = models.CharField(default="EUR", max_length=10, choices=CURRENCY_TYPES)  # Currency (only Euros)
     max_capacity = models.IntegerField(default=1)  # Maximum number of passengers
     description = models.TextField(max_length=1000)  # Description of the car
-    
+
     def __str__(self):
         return f"{self.name} ({self.type})"
-    
+
 
 class CarImage(models.Model):
     """
@@ -61,7 +62,7 @@ class CarImage(models.Model):
     image = CloudinaryField("image")  # Image field for the car, stored in Cloudinary
     caption = models.CharField(max_length=255, blank=True, null=True)  # Optional caption for the image
     car = models.ForeignKey(Car, related_name='images', on_delete=models.CASCADE)  # Relationship to the Car model
-    
+
     def __str__(self):
         return f"Image for {self.car.name} - {self.caption or 'No Caption'}"
 

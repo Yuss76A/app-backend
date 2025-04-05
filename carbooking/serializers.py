@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import Car, CarImage, BookedDate, User
 
+
 class CarImageSerializer(serializers.ModelSerializer):
     """
     Serializer for the CarImage model.

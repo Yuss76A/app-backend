@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 if os.path.exists('env.py'):
     import env
@@ -40,8 +41,6 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
 ]
-
-import dj_database_url
 
 # Application definition
 INSTALLED_APPS = [
@@ -73,9 +72,9 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     origin for origin in [
-    os.environ.get('CLIENT_ORIGIN'),
-    os.environ.get('CLIENT_ORIGIN_DEV')
-   ] if origin
+        os.environ.get('CLIENT_ORIGIN'),
+        os.environ.get('CLIENT_ORIGIN_DEV')
+    ] if origin
 ]
 
 CORS_ALLOW_CREDENTIALS = True
