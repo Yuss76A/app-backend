@@ -12,6 +12,7 @@ from .models import User, Car, BookedDate
 from .serializers import CarSerializer, CarImageSerializer, BookedDateSerializer, UserSerializer
 from .permissions import IsAdminOrReadOnly
 
+
 # API root endpoint
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -33,6 +34,7 @@ def api_root(request, format=None):
         'booked-dates': reverse('bookeddate-list', request=request, format=format)
     })
 
+
 # Car views
 class CarList(generics.ListCreateAPIView):
     """
@@ -47,6 +49,7 @@ class CarList(generics.ListCreateAPIView):
     serializer_class = CarSerializer
     permission_classes = [IsAdminOrReadOnly]
 
+
 class CarDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     API view to retrieve, update, or delete a specific car.
@@ -59,6 +62,7 @@ class CarDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Car.objects.all()
     serializer_class = CarSerializer
     permission_classes = [IsAdminOrReadOnly]
+
 
 # Booked Dates views
 class BookedDateList(generics.ListCreateAPIView):
@@ -73,7 +77,7 @@ class BookedDateList(generics.ListCreateAPIView):
     queryset = BookedDate.objects.all()
     serializer_class = BookedDateSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
     def get_queryset(self):
         """
         Retrieves the list of booked dates.
@@ -91,6 +95,7 @@ class BookedDateList(generics.ListCreateAPIView):
         # If user is not authenticated or is an admin, return all booked dates or an empty queryset.
         return BookedDate.objects.none()
 
+
 class BookedDateDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     API view to retrieve, update, or delete a specific booked date.
@@ -103,6 +108,7 @@ class BookedDateDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = BookedDate.objects.all()
     serializer_class = BookedDateSerializer
     permission_classes = [IsAdminOrReadOnly]
+
 
 # User views
 class UserList(generics.ListAPIView):
@@ -131,6 +137,7 @@ class UserList(generics.ListAPIView):
             return User.objects.all()
         else:
             return User.objects.filter(id=user.id)
+
 
 class UserDetail(generics.RetrieveAPIView):
     """
@@ -164,6 +171,7 @@ class UserDetail(generics.RetrieveAPIView):
             return obj
         else:
             raise PermissionDenied("You do not have permission to access this user's details.")
+
 
 # Registration view
 class Register(generics.CreateAPIView):
@@ -221,6 +229,7 @@ class Register(generics.CreateAPIView):
         super().create(request, *args, **kwargs)
         return Response(self.response_data)
 
+
 # Login view
 class Login(APIView):
     """
@@ -264,6 +273,7 @@ class Login(APIView):
             },
             "token": token.key,
         })
+
 
 # Test token view
 class TestToken(generics.RetrieveAPIView):
