@@ -69,31 +69,38 @@ class BookedDateList(generics.ListCreateAPIView):
     """
     API view to list and create booked dates.
 
-    Handles HTTP GET for listing all booked dates or user-specific dates, and POST for creating a new booking.
+    Handles HTTP GET requests to retrieve booked dates as well as
+    HTTP POST requests to create a new booking. The bookings are
+    only see their own bookings, while admin users can view all bookings.
 
     Permissions:
-        Authenticated users can create bookings; others can only read.
+        - Authenticated users can create new bookings.
+        - Admin users can view all bookings; regular users can only view their
+        own.
+
+    Methods:
+        get_queryset():
+            Retrieves the list of booked dates based on the user's
+            authentication status.
+            Admin users will see all bookings, while regular users will only
+            see their own.
+
+        perform_create(serializer):
+            Saves a new booked date instance, automatically associating it
+            with the currently authenticated user.
     """
-    queryset = BookedDate.objects.all()
     serializer_class = BookedDateSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        """
-        Retrieves the list of booked dates.
+        user = self.request.user
+        if user.is_staff:
+            return BookedDate.objects.all()
+        return BookedDate.objects.filter(user=user)
 
-        Filters the queryset to only include dates booked by the logged-in user if they are not an admin.
-
-        Returns:
-            QuerySet: The filtered queryset of booked dates for authenticated users.
-        """
-        user = self.request.user  
-        if user.is_authenticated:
-            # Only return booked dates for the authenticated user.
-            if not user.is_superuser and not user.is_staff:
-                return BookedDate.objects.filter(user=user)
-        # If user is not authenticated or is an admin, return all booked dates or an empty queryset.
-        return BookedDate.objects.none()
+    def perform_create(self, serializer):
+        # Automatically set the user to the current user
+        serializer.save(user=self.request.user)
 
 
 class BookedDateDetail(generics.RetrieveUpdateDestroyAPIView):
