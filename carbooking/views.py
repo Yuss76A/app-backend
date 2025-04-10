@@ -20,7 +20,7 @@ def api_root(request, format=None):
     API root endpoint.
 
     Provides links to the main API endpoints for cars, users, and booked dates.
-    
+
     Args:
         request: The HTTP request object.
         format: Optional format argument for response.
@@ -64,43 +64,32 @@ class CarDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminOrReadOnly]
 
 
-# Booked Dates views
 class BookedDateList(generics.ListCreateAPIView):
     """
     API view to list and create booked dates.
 
-    Handles HTTP GET requests to retrieve booked dates as well as
-    HTTP POST requests to create a new booking. The bookings are
-    only see their own bookings, while admin users can view all bookings.
+    Handles HTTP GET for listing all booked dates and POST for creating a
+    new booking.
 
     Permissions:
-        - Authenticated users can create new bookings.
-        - Admin users can view all bookings; regular users can only view their
-        own.
-
-    Methods:
-        get_queryset():
-            Retrieves the list of booked dates based on the user's
-            authentication status.
-            Admin users will see all bookings, while regular users will only
-            see their own.
-
-        perform_create(serializer):
-            Saves a new booked date instance, automatically associating it
-            with the currently authenticated user.
+        Authenticated users can create bookings; others can only read.
     """
+    queryset = BookedDate.objects.all()
     serializer_class = BookedDateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        """
+        Retrieves the list of booked dates.
+        Filters the queryset to only include dates booked by the logged-in
+        user if they are not an admin.
+        Returns:
+            QuerySet: The filtered queryset of booked dates.
+        """
         user = self.request.user
-        if user.is_staff:
-            return BookedDate.objects.all()
-        return BookedDate.objects.filter(user=user)
-
-    def perform_create(self, serializer):
-        # Automatically set the user to the current user
-        serializer.save(user=self.request.user)
+        if not user.is_superuser and not user.is_staff:
+            return BookedDate.objects.filter(user=user)
+        return super().get_queryset()
 
 
 class BookedDateDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -122,10 +111,11 @@ class UserList(generics.ListAPIView):
     """
     API view to list users.
 
-    Handles HTTP GET for listing all users or filtering to show only the requesting user.
+    Handles HTTP GET for listing all users or filtering to show only the
+    requesting user.
 
     Permissions:
-        Admin users can see all users; regular users only see their own details.
+        Admin users can see all users; regular users only see their own
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -134,7 +124,8 @@ class UserList(generics.ListAPIView):
         """
         Retrieves the list of users.
 
-        Filters the queryset to return all users for admins and only the requesting user for non-admins.
+        Filters the queryset to return all users for admins and only the
+        requesting user for non-admins.
 
         Returns:
             QuerySet: The filtered queryset of users.
@@ -168,7 +159,8 @@ class UserDetail(generics.RetrieveAPIView):
             User: The user object to be retrieved.
 
         Raises:
-            PermissionDenied: If the user does not have permission to access the details.
+            PermissionDenied: If the user does not have permission to access
+            the details.
         """
         user = self.request.user
         obj = super().get_object()
@@ -185,15 +177,18 @@ class Register(generics.CreateAPIView):
     """
     API view for user registration.
 
-    Allows new users to register, saving their details and generating an authentication token.
+    Allows new users to register, saving their details and generating an
+    authentication token.
 
     Attributes:
         queryset (QuerySet): The queryset containing all User objects.
         serializer_class (Serializer): The serializer class used for user data.
 
     Methods:
-        perform_create(serializer): Saves the new user and generates an authentication token.
-        create(request, *args, **kwargs): Custom method to return the user data and token in the response.
+        perform_create(serializer): Saves the new user and generates an
+        authentication token.
+        create(request, *args, **kwargs): Custom method to return the user
+        data and token in the response.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -203,7 +198,8 @@ class Register(generics.CreateAPIView):
         Saves the new user instance and generates an auth token.
 
         Args:
-            serializer (Serializer): The serializer containing validated user data.
+            serializer (Serializer): The serializer containing validated user
+            data.
 
         Side Effects:
             Creates a new user and associates an authentication token.
@@ -231,7 +227,8 @@ class Register(generics.CreateAPIView):
             *args, **kwargs: Additional arguments.
 
         Returns:
-            Response: A response object containing user data and the authentication token.
+            Response: A response object containing user data and the
+            authentication token.
         """
         super().create(request, *args, **kwargs)
         return Response(self.response_data)
@@ -245,7 +242,8 @@ class Login(APIView):
     Authenticates a user and returns a token if the credentials are correct.
 
     Methods:
-        post(request, *args, **kwargs): Authenticates the user and returns the auth token.
+        post(request, *args, **kwargs): Authenticates the user and returns the
+        auth token.
     """
     def post(self, request, *args, **kwargs):
         """
@@ -256,7 +254,8 @@ class Login(APIView):
             *args, **kwargs: Additional arguments.
 
         Returns:
-            Response: A response object containing user data and the authentication token.
+            Response: A response object containing user data and the
+            authentication token.
 
         Raises:
             AuthenticationFailed: If the username or password is incorrect.

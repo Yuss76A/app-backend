@@ -34,46 +34,24 @@ class CarImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image', 'caption', 'car']
 
 
-class BookedDateSerializer(serializers.ModelSerializer):
+class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the BookedDate model.
-
-    This serializer manages the conversion of BookedDate instances to and from
+    This serializer manages the conversion of BookedDate instances to and from 
     JSON, linking the booking to the respective car and user.
     """
-
-    car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all())
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), 
-        required=False
+    car = serializers.HyperlinkedRelatedField(
+        view_name='car-detail',
+        queryset=Car.objects.all()
+    )
+    user = serializers.HyperlinkedRelatedField(
+        view_name='user-detail',
+        queryset=User.objects.all()
     )
 
     class Meta:
         model = BookedDate
-        fields = ['id', 'car', 'user', 'start_date', 'end_date']
-        extra_kwargs = {
-            'user': {'read_only': True}  # User will be set automatically
-        }
-
-    def validate(self, data):
-        """
-        Validate that:
-        1. End date is after start date
-        2. No overlapping bookings for same car
-        """
-        if data['start_date'] > data['end_date']:
-            raise serializers.ValidationError("End date must be after start date")
-
-        overlapping = BookedDate.objects.filter(
-            car=data['car'],
-            start_date__lte=data['end_date'],
-            end_date__gte=data['start_date']
-        )
-
-        if overlapping.exists():
-            raise serializers.ValidationError("This car is already booked for the selected dates")
-
-        return data
+        fields = ['url', 'id', 'car', 'user', 'date']
 
 
 class CarSerializer(serializers.HyperlinkedModelSerializer):
