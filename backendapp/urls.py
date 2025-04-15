@@ -23,4 +23,5 @@ urlpatterns = [
     path('carbooking/', include('carbooking.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('', api_root, name='api-root'),
+    path('contact/', include('contact.urls')),
 ]
