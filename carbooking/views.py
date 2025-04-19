@@ -10,7 +10,7 @@ from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 
 from .models import User, Car, BookedDate
 from .serializers import CarSerializer, CarImageSerializer, BookedDateSerializer, UserSerializer
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 
 
 # API root endpoint
@@ -99,11 +99,20 @@ class BookedDateDetail(generics.RetrieveUpdateDestroyAPIView):
     Handles HTTP GET, PUT, PATCH, and DELETE requests for a booked date.
 
     Permissions:
-        Admin users have full access; others cannot modify.
+        Authenticated users can modify their own bookings; admin users
+        have full access.
     """
     queryset = BookedDate.objects.all()
     serializer_class = BookedDateSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
+
+    def get_object(self):
+        """
+        Overrides the method to ensure permissions are checked.
+        """
+        booked_date = super().get_object()
+        # The IsOwnerOrReadOnly permission class will handle ownership checks
+        return booked_date
 
 
 # User views
