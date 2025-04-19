@@ -51,7 +51,7 @@ class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = BookedDate
-        fields = ['url', 'id', 'car', 'user', 'date']
+        fields = ['url', 'id', 'car', 'user', 'start_date', 'end_date']
 
 
 class CarSerializer(serializers.HyperlinkedModelSerializer):
