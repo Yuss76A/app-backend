@@ -82,8 +82,8 @@ class BookedDate(models.Model):
     """
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='booked_dates')  # Relationship to the Car model
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='car_bookings')  # Relationship to the User model
-    start_date = models.DateField(null=True)  # Allow null initially
-    end_date = models.DateField(null=True) # Added end_date
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
 
     def __str__(self):
         return f"{self.date} - {self.car.name} booked by {self.user.username}"
