@@ -74,16 +74,21 @@ class BookedDate(models.Model):
     Attributes:
         car (ForeignKey): A reference to the associated Car model, indicating which car is booked.
         user (ForeignKey): A reference to the User model, indicating which user made the booking.
-        date (DateField): The date for which the car is booked.
+        start_date (DateField): The start date of the booking period.
+        end_date (DateField): The end date of the booking period.
+        reservation_number (CharField): Unique identifier for the booking.
 
     Methods:
-        __str__(): Returns a string representation of the BookedDate instance,
-                    showing the booking date, car name, and username of the user.
+        __str__(): Returns a string representation of the BookedDate instance.
+        clean(): Validates booking dates and checks for overlaps.
+        generate_reservation_number(): Creates a unique reservation code.
+        save(): Handles reservation number generation and validation before saving.
     """
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='booked_dates')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='car_bookings')
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
+    reservation_number = models.CharField(max_length=8, unique=True, blank=True)
 
     class Meta:
         constraints = [
@@ -92,6 +97,9 @@ class BookedDate(models.Model):
                 name='unique_booking_for_car_and_dates'
             )
         ]
+
+    def __str__(self):
+        return f"Reservation #{self.reservation_number} - {self.car.name} ({self.start_date} to {self.end_date})"
 
     def clean(self):
         # Ensure the start date is less than or equal to the end date
@@ -108,7 +116,21 @@ class BookedDate(models.Model):
         if overlapping.exists():
             raise ValidationError("This car is already booked for some of these dates.")
 
+    def generate_reservation_number(self):
+        """Generates a unique 6-character alphanumeric reservation code"""
+        import random
+        import string
+        while True:
+            letters = random.choices(string.ascii_uppercase, k=3)
+            numbers = random.choices(string.digits, k=3)
+            code = ''.join(letters + numbers)
+            if not BookedDate.objects.filter(reservation_number=code).exists():
+                return code
+
     def save(self, *args, **kwargs):
+        """Override save to generate reservation number and validate before saving"""
+        if not self.reservation_number:
+            self.reservation_number = self.generate_reservation_number()
         self.full_clean()
         super().save(*args, **kwargs)
 

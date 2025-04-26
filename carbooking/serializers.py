@@ -46,19 +46,24 @@ class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
     )
     user = serializers.HyperlinkedRelatedField(
         view_name='user-detail',
-        queryset=User.objects.all()
+        queryset=User.objects.all(),
+        required=False
+    )
+    reservation_number = serializers.CharField(
+        read_only=True,
+        help_text="Auto-generated booking reference code"
     )
 
     class Meta:
         model = BookedDate
-        fields = ['url', 'id', 'car', 'user', 'start_date', 'end_date']
+        fields = ['url', 'id', 'car', 'user', 'start_date', 'end_date', 'reservation_number']
 
     def validate(self, attrs):
         car = attrs.get('car')
         start_date = attrs.get('start_date')
         end_date = attrs.get('end_date')
 
-        # Check for conflicts with existing bookings for any user
+        # Check for conflicts with existing bookings
         if BookedDate.objects.filter(
             car=car,
             start_date__lte=end_date,
@@ -67,6 +72,13 @@ class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError("This car is already booked for the selected dates.")
 
         return attrs
+
+    def create(self, validated_data):
+        """Automatically sets the user from request and handles reservation number"""
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            validated_data['user'] = request.user
+        return super().create(validated_data)
 
 
 class CarSerializer(serializers.HyperlinkedModelSerializer):
