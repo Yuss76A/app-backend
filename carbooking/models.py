@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.conf import settings 
+from django.conf import settings
 from cloudinary.models import CloudinaryField
+from django.core.exceptions import ValidationError
 
 
 class Car(models.Model):
@@ -31,17 +32,16 @@ class Car(models.Model):
         ('pickup', 'Pickup'),
     ]
 
-    # Choices for currency type; only Euro is available
     CURRENCY_TYPES = [
-        ('EUR', 'EUR'),  # Only Euro
+        ('EUR', 'EUR'),
     ]
 
-    name = models.CharField(max_length=100, blank=True, default='')  # Car name
-    type = models.CharField(max_length=100, choices=CAR_TYPES)  # Type of the car
-    price_per_day = models.IntegerField(default=50)  # Price per day for renting the car
-    currency = models.CharField(default="EUR", max_length=10, choices=CURRENCY_TYPES)  # Currency (only Euros)
-    max_capacity = models.IntegerField(default=1)  # Maximum number of passengers
-    description = models.TextField(max_length=1000)  # Description of the car
+    name = models.CharField(max_length=100, blank=True, default='')
+    type = models.CharField(max_length=100, choices=CAR_TYPES)
+    price_per_day = models.IntegerField(default=50)
+    currency = models.CharField(default="EUR", max_length=10, choices=CURRENCY_TYPES)
+    max_capacity = models.IntegerField(default=1)
+    description = models.TextField(max_length=1000)
 
     def __str__(self):
         return f"{self.name} ({self.type})"
@@ -59,9 +59,9 @@ class CarImage(models.Model):
     Methods:
         __str__(): Returns a string representation of the CarImage instance, showing the car's name and the caption (if available).
     """
-    image = CloudinaryField("image")  # Image field for the car, stored in Cloudinary
-    caption = models.CharField(max_length=255, blank=True, null=True)  # Optional caption for the image
-    car = models.ForeignKey(Car, related_name='images', on_delete=models.CASCADE)  # Relationship to the Car model
+    image = CloudinaryField("image")
+    caption = models.CharField(max_length=255, blank=True, null=True)
+    car = models.ForeignKey(Car, related_name='images', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Image for {self.car.name} - {self.caption or 'No Caption'}"
@@ -80,13 +80,37 @@ class BookedDate(models.Model):
         __str__(): Returns a string representation of the BookedDate instance,
                     showing the booking date, car name, and username of the user.
     """
-    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='booked_dates')  # Relationship to the Car model
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='car_bookings')  # Relationship to the User model
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='booked_dates')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='car_bookings')
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
 
-    def __str__(self):
-        return f"{self.date} - {self.car.name} booked by {self.user.username}"
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['car', 'start_date', 'end_date'],
+                name='unique_booking_for_car_and_dates'
+            )
+        ]
+
+    def clean(self):
+        # Ensure the start date is less than or equal to the end date
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            raise ValidationError("End date must be after start date.")
+
+        # Ensure no overlapping bookings exist for the same car
+        overlapping = BookedDate.objects.filter(
+            car=self.car,
+            start_date__lte=self.end_date,
+            end_date__gte=self.start_date
+        ).exclude(pk=self.pk if self.pk else None)
+
+        if overlapping.exists():
+            raise ValidationError("This car is already booked for some of these dates.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 class User(AbstractUser):
@@ -105,19 +129,19 @@ class User(AbstractUser):
     Methods:
         __str__(): Returns a string representation of the User instance, typically the user's username or email.
     """
-    email = models.EmailField(unique=True)  # Unique email for the user
-    full_name = models.CharField(max_length=100, default="")  # Full name of the user
+    email = models.EmailField(unique=True)
+    full_name = models.CharField(max_length=100, default="")
 
     # Set unique related names for groups and user_permissions to avoid clashes
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='custom_user_set',  # Unique related name
+        related_name='custom_user_set',
         blank=True,
         help_text='The groups this user belongs to.'
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='custom_user_permissions_set',  # Unique related name
+        related_name='custom_user_permissions_set',
         blank=True,
         help_text='Specific permissions for this user.'
     )

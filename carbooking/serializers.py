@@ -53,6 +53,21 @@ class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
         model = BookedDate
         fields = ['url', 'id', 'car', 'user', 'start_date', 'end_date']
 
+    def validate(self, attrs):
+        car = attrs.get('car')
+        start_date = attrs.get('start_date')
+        end_date = attrs.get('end_date')
+
+        # Check for conflicts with existing bookings for any user
+        if BookedDate.objects.filter(
+            car=car,
+            start_date__lte=end_date,
+            end_date__gte=start_date
+        ).exists():
+            raise serializers.ValidationError("This car is already booked for the selected dates.")
+
+        return attrs
+
 
 class CarSerializer(serializers.HyperlinkedModelSerializer):
     """
