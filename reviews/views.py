@@ -24,7 +24,8 @@ class ReviewList(generics.ListCreateAPIView):
     Attributes:
         queryset (QuerySet): The base collection of review instances.
         serializer_class (class): The serializer for review data conversion.
-        permission_classes (list): Restricts access to authenticated users.
+        permission_classes (list): Authenticated users can modify,
+        unauthenticated can view.
         pagination_class (class): Custom pagination configuration.
         filter_backends (list): Enabled filtering backends.
         ordering_fields (list): Fields available for ordering.
