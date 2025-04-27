@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.filters import OrderingFilter
 from .models import Review
 from .serializers import ReviewSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .permissions import IsOwnerOrReadOnly
 from .pagination import StandardResultsPagination
 
@@ -35,7 +35,7 @@ class ReviewList(generics.ListCreateAPIView):
     """
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = StandardResultsPagination
     filter_backends = [OrderingFilter]
     ordering_fields = ['created_at', 'rating']
