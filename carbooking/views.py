@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -9,7 +8,11 @@ from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 
 from .models import User, Car, BookedDate
-from .serializers import CarSerializer, CarImageSerializer, BookedDateSerializer, UserSerializer
+from .serializers import (
+    CarSerializer,
+    BookedDateSerializer,
+    UserSerializer
+)
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 
 
@@ -31,7 +34,11 @@ def api_root(request, format=None):
     return Response({
         'cars': reverse('car-list', request=request, format=format),
         'users': reverse('user-list', request=request, format=format),
-        'booked-dates': reverse('bookeddate-list', request=request, format=format)
+        'booked-dates': reverse(
+            'bookeddate-list',
+            request=request,
+            format=format
+        )
     })
 
 
@@ -181,7 +188,9 @@ class UserDetail(generics.RetrieveAPIView):
         if obj == user or user.is_staff or user.is_superuser:
             return obj
         else:
-            raise PermissionDenied("You do not have permission to access this user's details.")
+            raise PermissionDenied(
+                "You do not have permission to access this user's details."
+            )
 
 
 # Registration view

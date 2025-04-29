@@ -170,7 +170,10 @@ REST_FRAMEWORK = {
 
 
 AUTH_USER_MODEL = 'carbooking.User'
-AUTHENTICATION_BACKENDS = ['carbooking.auth_backend.EmailBackend', 'django.contrib.auth.backends.ModelBackend']
+AUTHENTICATION_BACKENDS = [
+    'carbooking.auth_backend.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
 
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'

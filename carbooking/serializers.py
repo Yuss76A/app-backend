@@ -7,7 +7,8 @@ class CarImageSerializer(serializers.ModelSerializer):
     """
     Serializer for the CarImage model.
 
-    This serializer handles the conversion of CarImage instances to and from JSON.
+    This serializer handles the conversion of CarImage instances to and from
+    JSON.
     It includes the associated car's URL and the URL of the image.
     """
 
@@ -37,7 +38,7 @@ class CarImageSerializer(serializers.ModelSerializer):
 class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the BookedDate model.
-    This serializer manages the conversion of BookedDate instances to and from 
+    This serializer manages the conversion of BookedDate instances to and from
     JSON, linking the booking to the respective car and user.
     """
     car = serializers.HyperlinkedRelatedField(
@@ -56,7 +57,15 @@ class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = BookedDate
-        fields = ['url', 'id', 'car', 'user', 'start_date', 'end_date', 'reservation_number']
+        fields = [
+            'url',
+            'id',
+            'car',
+            'user',
+            'start_date',
+            'end_date',
+            'reservation_number'
+        ]
 
     def validate(self, attrs):
         car = attrs.get('car')
@@ -69,12 +78,16 @@ class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
             start_date__lte=end_date,
             end_date__gte=start_date
         ).exists():
-            raise serializers.ValidationError("This car is already booked for the selected dates.")
+            raise serializers.ValidationError(
+                "This car is already booked for the selected dates."
+            )
 
         return attrs
 
     def create(self, validated_data):
-        """Automatically sets the user from request and handles reservation number"""
+        """Automatically sets the user from request and handles reservation
+        number
+        """
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             validated_data['user'] = request.user
@@ -94,7 +107,7 @@ class CarSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Car
-        fields = ['url', 'id', 'name', 'type', 'price_per_day', 'currency', 
+        fields = ['url', 'id', 'name', 'type', 'price_per_day', 'currency',
                   'max_capacity', 'description', 'booked_dates', 'images']
 
 

@@ -10,8 +10,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     validates the rating. Includes user's full name for display purposes.
 
     Attributes:
-        user_full_name (CharField): The full name of the user who created the review
-        Meta (class): Metadata for the serializer, including fields and read-only fields
+        user_full_name (CharField): The full name of the user who created
+        the review.
+        Meta (class): Metadata for the serializer, including fields and
+        read-only fields
 
     Methods:
         validate_rating(value): Ensures that the rating is between 1 and 5.
@@ -25,11 +27,21 @@ class ReviewSerializer(serializers.ModelSerializer):
             serializer.save(user=request.user)
         ```
     """
-    user_full_name = serializers.CharField(source='user.get_full_name', read_only=True)
+    user_full_name = serializers.CharField(
+        source='user.get_full_name',
+        read_only=True
+    )
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'user_full_name', 'rating', 'comment', 'created_at']
+        fields = [
+            'id',
+            'user',
+            'user_full_name',
+            'rating',
+            'comment',
+            'created_at'
+        ]
         read_only_fields = ['user', 'created_at', 'user_full_name',]
 
     def validate_rating(self, value):
