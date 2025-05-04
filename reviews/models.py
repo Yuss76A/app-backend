@@ -9,14 +9,10 @@ class Review(models.Model):
 
     Attributes:
         user (ForeignKey): The user who wrote the review.
-        rating (IntegerField): Rating from 0 to 5 for the review.
-        comment (TextField): Text feedback provided by the user.
+        rating (IntegerField): Rating from 1 to 5 for the review.
+        comment (TextField): Text feedback provided by the user
+        (cannot be empty).
         created_at (DateTimeField): Timestamp for when the review was created.
-
-    Methods:
-        clean(): Validates that the rating is between 0 and 5.
-        save(*args, **kwargs): Overrides save to ensure rating validation
-        before saving.
     """
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -28,12 +24,14 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
-        """Validate that rating is between 0 and 5."""
-        if self.rating < 0 or self.rating > 5:
-            raise ValidationError('Rating must be between 0 and 5.')
+        """Validate that rating is between 1 and 5 and comment is not empty."""
+        if self.rating < 1 or self.rating > 5:
+            raise ValidationError({'rating': 'Rating must be between 1 and 5.'})
+        if not self.comment.strip():
+            raise ValidationError({'comment': 'Comment cannot be empty.'})
 
     def save(self, *args, **kwargs):
-        """Override save to validate the rating before saving."""
+        """Override save to validate before saving."""
         self.clean()
         super().save(*args, **kwargs)
 
