@@ -26,7 +26,9 @@ class Review(models.Model):
     def clean(self):
         """Validate that rating is between 1 and 5 and comment is not empty."""
         if self.rating < 1 or self.rating > 5:
-            raise ValidationError({'rating': 'Rating must be between 1 and 5.'})
+            raise ValidationError({
+                'rating': 'Rating must be between 1 and 5.'
+            })
         if not self.comment.strip():
             raise ValidationError({'comment': 'Comment cannot be empty.'})
 
