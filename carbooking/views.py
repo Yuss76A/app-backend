@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework import generics, permissions
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 
 from .models import User, Car, BookedDate
@@ -259,27 +258,30 @@ class Register(generics.CreateAPIView):
 class Login(APIView):
     """
     Handles user login by email and password.
-    Returns a token if credentials are valid.
+    Checks if the user exists and if the password is correct.
+    If successful, returns an authentication token along with user info.
+    Raises authentication errors if the user is not found or password is
+    invalid.
     """
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        if not email or not password:
-            raise AuthenticationFailed('Email and password are required.')
+        try:
+            user = User.objects.get(email=email)
+            if not user.check_password(password):
+                raise AuthenticationFailed('Invalid password')
+        except User.DoesNotExist:
+            raise AuthenticationFailed('User not found')
 
-        # Use authenticate with email as username
-        user = authenticate(request, username=email, password=password)
-
-        if not user:
-            raise AuthenticationFailed('Invalid email or password.')
-
-        token, created = Token.objects.get_or_create(user=user)
-        serializer = UserSerializer(user)
-
+        token, _ = Token.objects.get_or_create(user=user)
         return Response({
-            'user': serializer.data,
-            'token': token.key
+            'token': token.key,
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'full_name': user.full_name
+            }
         })
 
 

@@ -180,11 +180,24 @@ class BookedDate(models.Model):
 
 
 class User(AbstractUser):
+    """
+    Custom user model inheriting from Django's AbstractUser.
+    I added an email field that must be unique and used as the main login.
+    The 'full_name' field stores the user's full name.
+    The 'username' field is optional and not used for login.
+    When you print a user, it shows their email.
+    """
     email = models.EmailField('email address', unique=True)
     full_name = models.CharField('full name', max_length=100, blank=True)
+    username = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True,
+        unique=False
+    )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email

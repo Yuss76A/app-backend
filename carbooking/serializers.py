@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
 from .models import Car, CarImage, BookedDate, User
 
 
@@ -111,17 +110,25 @@ class CarSerializer(serializers.HyperlinkedModelSerializer):
                   'max_capacity', 'description', 'booked_dates', 'images']
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """
-    This serializer turns User objects into a nice, link-rich format.
-    It includes links to the user detail API endpoint (`url`) so clients
-    can easily navigate to user info. It also handles secure password
-    writing by hashing the password automatically.
+    Serializer for the User model.
+    Converts User objects to and from JSON, allowing creation with email,
+    full name, and password. It hashes the password before saving.
     """
+    name = serializers.CharField(source='full_name', write_only=True)
+
     class Meta:
         model = User
-        fields = ['url', 'id', 'email', 'full_name', 'password']
+        fields = ['id', 'email', 'name', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
-    def validate_password(self, value):
-        return make_password(value)
+    def create(self, validated_data):
+        full_name = validated_data.pop('full_name', '')
+        user = User(
+            email=validated_data['email'],
+            full_name=full_name
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
