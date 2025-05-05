@@ -9,7 +9,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     full name to help display who wrote each review. The serializer also
     performs validation to ensure that the rating is within the valid range
     of 1 to 5, and that comments are not left empty or filled with only
-    whitespace. 
+    whitespace.
 
     Usage example:
         To create or update a review, instantiate the serializer with
