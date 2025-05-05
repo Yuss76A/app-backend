@@ -6,20 +6,14 @@ class ContactSerializer(serializers.ModelSerializer):
     """
     Serializer for the Contact model.
 
-    This serializer handles the validation and serialization of
-    contact request data, allowing for the conversion between
-    Contact instances and JSON data.
-
-    Attributes:
-        name (CharField): The name of the contact.
-        email (EmailField): The email address of the contact.
-        message (CharField): The message left by the contact.
-
-    Example usage:
-        serializer = ContactSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+    Handles validation to ensure the message isn't empty or just whitespace.
     """
     class Meta:
         model = Contact
         fields = ('name', 'email', 'message')
+
+    def validate_message(self, value):
+        """Ensure message contains non-whitespace content"""
+        if not value.strip():
+            raise serializers.ValidationError('Message cannot be empty.')
+        return value

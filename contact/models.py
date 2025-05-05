@@ -1,27 +1,31 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Contact(models.Model):
     """
-    Model representing a contact request.
-
-    This model stores information submitted by users through the 
-    contact form, including their name, email address, message, 
-    and the timestamp when the contact request was created.
-
-    Attributes:
-        name (str): The name of the contact.
-        email (str): The email address of the contact.
-        message (str): The message left by the contact.
-        created_at (datetime): The timestamp when the contact request was created.
-
-    Methods:
-        __str__(): Returns the name of the contact as a string representation of the model.
+    Handles contact form submissions. Make sure the message actually
+    has content.
+    When saving, it runs validation to prevent empty messages from
+    being stored.
     """
     name = models.CharField(max_length=100)
     email = models.EmailField()
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        """Ensures message contains non-whitespace content"""
+        if not self.message.strip():
+            raise ValidationError(
+                {'message': 'Message must contain actual content.'}
+            )
+        super().clean()
+
+    def save(self, *args, **kwargs):
+        """Always runs validation before saving"""
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
