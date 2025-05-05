@@ -113,24 +113,15 @@ class CarSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
-    Serializer for the User model.
-
-    This serializer is used to manage the conversion of User instances to
-    and from JSON, including password hashing before saving.
+    This serializer turns User objects into a nice, link-rich format.
+    It includes links to the user detail API endpoint (`url`) so clients
+    can easily navigate to user info. It also handles secure password
+    writing by hashing the password automatically.
     """
-
     class Meta:
         model = User
-        fields = ['url', 'id', 'username', 'password', 'email', 'full_name']
+        fields = ['url', 'id', 'email', 'full_name', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def validate_password(self, value):
-        """
-        Hash the password before saving it.
-
-        Args:
-            value: The raw password entered by the user.
-
-        Returns:
-            str: The hashed password.
-        """
         return make_password(value)

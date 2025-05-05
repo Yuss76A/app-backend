@@ -258,47 +258,28 @@ class Register(generics.CreateAPIView):
 # Login view
 class Login(APIView):
     """
-    API view for user login.
-
-    Authenticates a user and returns a token if the credentials are correct.
-
-    Methods:
-        post(request, *args, **kwargs): Authenticates the user and returns the
-        auth token.
+    Handles user login by email and password.
+    Returns a token if credentials are valid.
     """
     def post(self, request, *args, **kwargs):
-        """
-        Handles the HTTP POST request to authenticate a user.
-
-        Args:
-            request: The request object containing login credentials.
-            *args, **kwargs: Additional arguments.
-
-        Returns:
-            Response: A response object containing user data and the
-            authentication token.
-
-        Raises:
-            AuthenticationFailed: If the username or password is incorrect.
-        """
-        username = request.data.get('username')
+        email = request.data.get('email')
         password = request.data.get('password')
 
-        user = authenticate(username=username, password=password)
+        if not email or not password:
+            raise AuthenticationFailed('Email and password are required.')
 
-        if user is None:
-            raise AuthenticationFailed('Invalid username or password')
+        # Use authenticate with email as username
+        user = authenticate(request, username=email, password=password)
+
+        if not user:
+            raise AuthenticationFailed('Invalid email or password.')
 
         token, created = Token.objects.get_or_create(user=user)
+        serializer = UserSerializer(user)
 
         return Response({
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "full_name": user.full_name
-            },
-            "token": token.key,
+            'user': serializer.data,
+            'token': token.key
         })
 
 

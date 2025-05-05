@@ -180,39 +180,11 @@ class BookedDate(models.Model):
 
 
 class User(AbstractUser):
-    """
-    Represents an extended user model for the rental car application.
+    email = models.EmailField('email address', unique=True)
+    full_name = models.CharField('full name', max_length=100, blank=True)
 
-    This model extends the default Django AbstractUser model to include
-    additional fields that support user registration and management.
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
-    Attributes:
-        email (EmailField): A unique email address for the user, which is used
-        for authentication.
-        full_name (str): The full name of the user, used to provide a
-        personalized experience.
-        groups (ManyToManyField): A many-to-many relationship to groups,
-        allowing the user to belong to multiple groups.
-        user_permissions (ManyToManyField): A many-to-many relationship to
-        permissions, granting specific access rights to the user.
-
-    Methods:
-        __str__(): Returns a string representation of the User instance,
-        typically the user's username or email.
-    """
-    email = models.EmailField(unique=True)
-    full_name = models.CharField(max_length=100, default="")
-
-    # Set unique related names for groups and user_permissions to avoid clashes
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='custom_user_set',
-        blank=True,
-        help_text='The groups this user belongs to.'
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='custom_user_permissions_set',
-        blank=True,
-        help_text='Specific permissions for this user.'
-    )
+    def __str__(self):
+        return self.email
