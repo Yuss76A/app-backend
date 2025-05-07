@@ -7,29 +7,14 @@ from django.core.exceptions import ValidationError
 
 class Car(models.Model):
     """
-    Represents a car available for rent in the rental car application.
+    This class represents a Car object in the rental car app.
 
-    Attributes:
-        name (str): The name of the car (e.g., "Toyota Camry").
-        type (str): The type of car, selected from predefined choices (sedan,
-        SUV, hatchback, convertible, pickup).
-        price_per_day (int): The rental price per day for the car, defaulting
-        to 50 Euros.
-        currency (str): The currency in which the price is set, defaulting to
-        Euro (EUR).
-        max_capacity (int): The maximum number of passengers that the car can
-        accommodate, defaulting to 1.
-        description (str): A detailed description of the car, limited to 1000
-        characters.
+    It has attributes like name, type, price per day, currency, max capacity,
+    and a description.
+    The car type is chosen from a predefined list, and currently, it only
+    supports Euros as currency.
 
-    Choices:
-        CAR_TYPES (list): A list of tuples representing valid car types.
-        CURRENCY_TYPES (list): A list of tuples representing valid currency
-        types (currently only Euro is supported).
-
-    Methods:
-        __str__(): Returns a string representation of the car, including its
-        name and type.
+    The __str__ method returns the car's name and type for easy identification.
     """
     CAR_TYPES = [
         ('sedan', 'Sedan'),
@@ -43,7 +28,7 @@ class Car(models.Model):
         ('EUR', 'EUR'),
     ]
 
-    name = models.CharField(max_length=100, blank=True, default='')
+    name = models.CharField(max_length=100)
     type = models.CharField(max_length=100, choices=CAR_TYPES)
     price_per_day = models.IntegerField(default=50)
     currency = models.CharField(
@@ -60,19 +45,13 @@ class Car(models.Model):
 
 class CarImage(models.Model):
     """
-    Represents an image associated with a car in the rental car application.
+    This class handles images related to cars in the rental app.
+    It stores the image itself, which is kept on Cloudinary, plus an optional
+    caption for extra info. Each image is linked to a specific
+    Car through a foreign key.
 
-    Attributes:
-        image (CloudinaryField): The image file for the car, stored on
-        Cloudinary.
-        caption (str, optional): An optional caption for the image, allowing
-        for additional context or description.
-        car (ForeignKey): A reference to the associated Car model, indicating
-        which car this image belongs to.
-
-    Methods:
-        __str__(): Returns a string representation of the CarImage instance,
-        showing the car's name and the caption (if available).
+    The __str__ method displays the car's name and the caption (if provided)
+    to easily identify the image.
     """
     image = CloudinaryField("image")
     caption = models.CharField(max_length=255, blank=True, null=True)
@@ -88,23 +67,16 @@ class CarImage(models.Model):
 
 class BookedDate(models.Model):
     """
-    Represents a booking of a car by a user in the rental car application.
+    This class represents a booking made by a user for a car in the rental app.
+    It links to the specific car and user, and keeps track of the booking
+    period with start and end dates.
+    Each booking also has a unique reservation number for identification.
 
-    Attributes:
-        car (ForeignKey): A reference to the associated Car model, indicating
-        which car is booked.
-        user (ForeignKey): A reference to the User model, indicating which
-        user made the booking.
-        start_date (DateField): The start date of the booking period.
-        end_date (DateField): The end date of the booking period.
-        reservation_number (CharField): Unique identifier for the booking.
-
-    Methods:
-        __str__(): Returns a string representation of the BookedDate instance.
-        clean(): Validates booking dates and checks for overlaps.
-        generate_reservation_number(): Creates a unique reservation code.
-        save(): Handles reservation number generation and validation before
-        saving.
+    The __str__ method provides a simple string for the booking, while the
+    clean method ensures the dates are valid and don’t overlap with
+    existing bookings.
+    The generate_reservation_number creates a unique code, and save handles
+    generating that code before saving the record.
     """
     car = models.ForeignKey(
         Car,
@@ -139,7 +111,6 @@ class BookedDate(models.Model):
         )
 
     def clean(self):
-        # Ensure the start date is less than or equal to the end date
         if (
             self.start_date and
             self.end_date
@@ -147,7 +118,6 @@ class BookedDate(models.Model):
         ):
             raise ValidationError("End date must be after start date.")
 
-        # Ensure no overlapping bookings exist for the same car
         overlapping = BookedDate.objects.filter(
             car=self.car,
             start_date__lte=self.end_date,

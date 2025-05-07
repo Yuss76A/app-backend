@@ -8,29 +8,17 @@ from .serializers import ContactSerializer
 
 class ContactView(APIView):
     """
-    API view to handle contact requests.
+    API view to manage contact requests.
 
-    This view allows users to create a new contact request, retrieve
-    a list of all contact requests, retrieve a specific contact request
-    by its primary key, and delete contact requests.
+    This view lets users create new contact requests, retrieve a list of all
+    requests, get a specific request by its ID, or delete requests.
+    Any user can access this view, regardless of authentication.
 
     Methods:
-        post(request):
-            Allows users to create a new contact request.
-            Expects contact information in the request body.
-
-        get(request, pk=None):
-            Retrieves contact requests. If `pk` is provided,
-            retrieves a single contact request. Otherwise,
-            retrieves a list of all contact requests.
-
-        delete(request, pk=None):
-            Deletes a specific contact request by its primary key if `pk`
-            is provided. If no `pk` is provided, deletes all contact requests.
-
-    Permissions:
-        AllowAny:
-            Any user can access this view regardless of authentication.
+    post(request): Creates a new contact request with the provided data.
+    get(request, pk=None): Retrieves all contacts or a specific one
+    if `pk` is given. delete(request, pk=None):
+    Deletes a specific contact if `pk` is provided, or all contacts if not.
     """
     permission_classes = [AllowAny]
 
