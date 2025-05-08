@@ -67,16 +67,29 @@ class BookedDateSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
     def validate(self, attrs):
-        car = attrs.get('car')
-        start_date = attrs.get('start_date')
-        end_date = attrs.get('end_date')
 
-        # Check for conflicts with existing bookings
-        if BookedDate.objects.filter(
+        car = attrs.get('car', getattr(self.instance, 'car', None))
+        start_date = attrs.get(
+            'start_date',
+            getattr(self.instance, 'start_date', None)
+        )
+        end_date = attrs.get(
+            'end_date',
+            getattr(self.instance, 'end_date', None)
+            )
+
+        if not (car and start_date and end_date):
+            return attrs
+
+        overlaps = BookedDate.objects.filter(
             car=car,
             start_date__lte=end_date,
-            end_date__gte=start_date
-        ).exists():
+            end_date__gte=start_date,
+        )
+        if self.instance:
+            overlaps = overlaps.exclude(pk=self.instance.pk)
+
+        if overlaps.exists():
             raise serializers.ValidationError(
                 "This car is already booked for the selected dates."
             )
