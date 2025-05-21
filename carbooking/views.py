@@ -260,6 +260,7 @@ class Login(APIView):
     Handles user login by email and password.
     Checks if the user exists and if the password is correct.
     If successful, returns an authentication token along with user info.
+    Includes a welcome message in the response on successful login.
     Raises authentication errors if the user is not found or password is
     invalid.
     """
@@ -281,7 +282,8 @@ class Login(APIView):
                 'id': user.id,
                 'email': user.email,
                 'full_name': user.full_name
-            }
+            },
+            'welcome_message': "Welcome to Happy Rental Jönköping!"
         })
 
 
