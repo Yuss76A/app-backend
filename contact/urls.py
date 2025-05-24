@@ -8,7 +8,7 @@ and access specific contact details using their primary key (pk).
 URL Patterns:
 - `''`: POST to create a new contact request or GET to list all contacts.
 - `'<int:pk>/'`: GET to retrieve a specific contact, DELETE to remove it,
-and potentially 
+and potentially
   other HTTP methods for updating (depending on the view implementation).
 """
 

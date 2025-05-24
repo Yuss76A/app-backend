@@ -31,7 +31,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             'comment',
             'created_at'
         ]
-        read_only_fields = ['user', 'created_at', 'user_full_name',]
+        read_only_fields = ['user', 'created_at', 'user_full_name', ]
 
     def validate_rating(self, value):
         """Ensure the rating is between 1 and 5."""
