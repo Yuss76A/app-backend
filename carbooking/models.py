@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from cloudinary.models import CloudinaryField
+from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 
@@ -113,10 +114,14 @@ class BookedDate(models.Model):
     def clean(self):
         if (
             self.start_date and
-            self.end_date
-            and self.start_date > self.end_date
+            self.end_date and
+            self.start_date > self.end_date
         ):
             raise ValidationError("End date must be after start date.")
+
+        today = timezone.now().date()
+        if self.start_date < today or self.end_date < today:
+            raise ValidationError("Cannot book or modify dates in the past.")
 
         overlapping = BookedDate.objects.filter(
             car=self.car,
