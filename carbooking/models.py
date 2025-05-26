@@ -74,8 +74,8 @@ class BookedDate(models.Model):
     Each booking also has a unique reservation number for identification.
 
     The __str__ method provides a simple string for the booking, while the
-    clean method ensures the dates are valid and don’t overlap with
-    existing bookings.
+    clean method ensures the dates are valid (including no past dates)
+    and don’t overlap with existing bookings.
     The generate_reservation_number creates a unique code, and save handles
     generating that code before saving the record.
     """
