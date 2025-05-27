@@ -18,7 +18,8 @@ The following URL patterns are included:
 """
 
 
-from django.urls import path
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
 from .views import (
     api_root,
     CarList,
@@ -28,8 +29,12 @@ from .views import (
     UserList,
     UserDetail,
     Register,
-    Login
+    Login,
+    CarImageViewSet
 )
+
+router = DefaultRouter()
+router.register(r'carimages', CarImageViewSet, basename='carimage')
 
 urlpatterns = [
     path('', api_root, name='api-root'),
@@ -45,4 +50,5 @@ urlpatterns = [
     path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
     path('register/', Register.as_view(), name='register'),
     path('login/', Login.as_view(), name='login'),
+    path('', include(router.urls)),
 ]

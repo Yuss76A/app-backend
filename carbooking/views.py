@@ -6,11 +6,14 @@ from rest_framework import generics, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 
+from rest_framework import viewsets
+from .models import CarImage
 from .models import User, Car, BookedDate
 from .serializers import (
     CarSerializer,
     BookedDateSerializer,
-    UserSerializer
+    UserSerializer,
+    CarImageSerializer
 )
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 
@@ -300,3 +303,9 @@ class TestToken(generics.RetrieveAPIView):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class CarImageViewSet(viewsets.ModelViewSet):
+    queryset = CarImage.objects.all()
+    serializer_class = CarImageSerializer
+    permission_classes = [IsAdminOrReadOnly]
