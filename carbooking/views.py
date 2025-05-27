@@ -306,6 +306,11 @@ class TestToken(generics.RetrieveAPIView):
 
 
 class CarImageViewSet(viewsets.ModelViewSet):
+    """
+    Manages CRUD operations for car images.
+
+    Allows anyone to view images, but only admins can add, edit, or delete them.
+    """
     queryset = CarImage.objects.all()
     serializer_class = CarImageSerializer
     permission_classes = [IsAdminOrReadOnly]
