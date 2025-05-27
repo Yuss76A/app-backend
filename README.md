@@ -93,3 +93,24 @@ Additionally, I created stories related to the frontend—explicitly labeled as 
 | BookedDate   | `/booked-dates/`<br>`/booked-dates/:id/` | yes | yes | yes      | yes      | by user/car/date            | no          | Owner or Admin for modifications |
 | Contact      | `/contact/`<br>`/contact/:id/`| yes      | yes      | no       | yes      | no                          | no          | Admin-only for view/delete       |
 | Review       | `/reviews/`<br>`/reviews/:id/`| yes      | yes      | yes      | yes      | by rating/user/date         | no          | Owner or Admin for modifications |
+
+## Manual Testing Summary - Backend CRUD Operations
+
+Extensive manual testing was performed on all CRUD functionalities across the backend system.
+
+Create Operations:
+New records such as users, cars, bookings, reviews, contact messages, and images were successfully added via the API. Data was accurately stored, and relationships were correctly established.
+
+Retrieve Operations:
+Listing endpoints returned the correct data sets, with filtering options (e.g., bookings by user, cars by type) working as intended. Individual record fetches provided complete and correct detail data.
+
+Update Operations:
+Existing records, including bookings, reviews, and user details, were successfully updated. Changes persisted correctly and reflected in subsequent queries.
+
+Delete Operations:
+Deletion endpoints functioned correctly, removing specified data from the database. Permission controls ensured that only authorized users or administrators could delete data, maintaining system security.
+
+Permissions & Access Control:
+All endpoints respected the defined permissions: owners could update or delete their own data, admins had full control, and unauthorized attempts were correctly blocked.
+
+This comprehensive manual testing confirmed that all CRUD workflows operate reliably, ensuring data integrity and secure access across the backend.
