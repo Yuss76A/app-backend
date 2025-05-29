@@ -98,6 +98,72 @@ Additionally, I created stories related to the frontend—explicitly labeled as 
 | Contact      | `/contact/`<br>`/contact/:id/`| yes      | yes      | no       | yes      | no                          | no          | Admin-only for view/delete       |
 | Review       | `/reviews/`<br>`/reviews/:id/`| yes      | yes      | yes      | yes      | by rating/user/date         | no          | Owner or Admin for modifications |
 
+## Database Models
+
+- Here's a quick overview of the main database models used in this project and their basic fields. These models define how data is structured and related in the backend database.
+
+#### Car Model
+
+| Object             | Field                |
+|--------------------|----------------------|
+| name               | CharField            |
+| type               | CharField (choices)  |
+| price_per_day      | IntegerField         |
+| currency           | CharField            |
+| max_capacity       | IntegerField         |
+| description        | TextField            |
+
+#### CarImage Model
+
+| Object     | Field             |
+|------------|-------------------|
+| image      | CloudinaryField   |
+| caption    | CharField         |
+| car        | ForeignKey        |
+
+#### BookedDate Model
+
+| Object            | Field                   |
+|-------------------|-------------------------|
+| car               | ForeignKey              |
+| user              | ForeignKey              |
+| start_date        | DateField               |
+| end_date          | DateField               |
+| reservation_number| CharField               |
+
+#### User Model
+
+| Object     | Field                  |
+|------------|------------------------|
+| email      | EmailField             |
+| full_name  | CharField              |
+| username   | CharField (optional)   |
+
+#### Contact Model
+
+| Object    | Field                      |
+|-----------|----------------------------|
+| name      | CharField                  |
+| email     | EmailField                 |
+| message   | TextField                  |
+| created_at| DateTimeField              |
+
+#### Review Model
+
+| Object    | Field                      |
+|-----------|----------------------------|
+| user      | ForeignKey                 |
+| rating    | IntegerField               |
+| comment   | TextField                  |
+| created_at| DateTimeField              |
+
+## Overview of Database Structure
+
+Below is a visual diagram representing the core structure of our database. It illustrates how the main entities—such as Cars, Bookings, Users, and Reviews—are interconnected. This ERD provides an easy-to-understand overview of how data is organized and related within the system, helping to visualize the relationships and dependencies that support the application's functionality.
+
+**ERD (Entity-Relationship Diagram)**
+![ERD (Entity-Relationship Diagram)](static/images/screenshots/erdrentapp.png)
+
 ## Testing
 
 To validate all python code used in this project, each file was evaluated using the [CI Python Linter](https://pep8ci.herokuapp.com/).
@@ -294,6 +360,24 @@ Note: Depending on your system and Python environment, you might need to use pip
 
 #### Backend
 
+## Technologies Used
+
+#### Frameworks & Libraries
+
+* Python — The main programming language for the backend development.
+* Django — Web framework used to build the API, manage models, handle authentication, and serve data.
+* Django REST Framework — To create RESTful APIs and serialize data efficiently.
+* PostgreSQL — The main database system, hosted via NeonDB.
+* Cloudinary — Cloud service for hosting and managing images, integrated via django-cloudinary-storage.
+* Gunicorn — WSGI server used for deploying the Django app.
+
+#### Tools & Resources
+
+* Lucidchart - Used for designing the ERD and visualizing the database schema.
+* Chrome DevTools — Browser profiling and debugging.
+* Heroku — Cloud platform for deploying and hosting the backend.
+* GitHub — Version control and code repository hosting.
+
 #### Database Connection:
 
 - Installed psycopg2 library to connect to the PostgreSQL database.
@@ -342,6 +426,30 @@ This project was deployed using [Heroku](https://www.heroku.com "Heroku") by fol
 * CLIENT_ORIGIN_DEV	your local URL	Typically http://localhost:3000
 * SECRET_KEY	your secret key	Generate a unique secret key for production (keep it private)
 * DEVELOPMENT	1	Set to "1" during development to enable debug mode
+
+## My Journey Building the Backend
+
+Building the backend for this project was definitely a journey filled with challenges and learning. In the beginning, it wasn’t easy to work with the API—there were moments of confusion and frustration. But as I pushed through, I started to really enjoy the process. Once I began to understand how everything fit together, it changed the way I saw the system. It became more like solving a puzzle—fun and rewarding.
+
+There were tough days, but also many memorable, even funny moments that made the work all the more worthwhile. I’m genuinely proud of what I’ve accomplished within the time I had. Sure, there's always room for improvement, and I know the project can be expanded with many more features, but balancing this with a full-time job and my studies made it a challenge.
+
+Looking back, I’m happy with what I managed to build. It’s been a fulfilling experience, and I’ve learned a lot along the way. This project is a testament to my dedication, and I look forward to growing even more in the future.
+
+## My Journey with Code Institute: A Year of Growth and Gratitude
+
+A year ago, I was at work when I received a phone call from Code Institute. After we finished the call, I wasn’t sure about what to do next. I was overwhelmed with my full-time job, studying, and honestly, I doubted if I was capable of starting this journey. I was scared I might fail. But I decided to take the challenge, with that little voice inside telling me, “What if I fail?”
+
+Starting the program opened up a whole new world for me. Today, I can say that I’ve found something I love—a passion I never knew I had. I’m truly happy that I took that call from Code Institute. 
+
+So, I want to say thank you first to Code Institute for an incredible journey and for providing all the tools and support along the way. Thanks to all the mentors who helped me through this sometimes challenging, but always rewarding year of learning. A special shoutout to the assessors, whose feedback and tips have been invaluable in helping me improve my skills.
+
+And a big thank you to the Slack community for always being there—ready to support, guide, and inspire me whenever I needed it. 
+
+To everyone involved—Code Institute, assessors, mentors, and the Slack community—thank you from the bottom of my heart. This experience has been life-changing, and I’m grateful for every moment.
+
+## Acknowledgment
+
+In this section, I’ve tried to explain the core functionalities of the backend—how it integrates with the frontend and enables the application to run smoothly. Please understand that this is a large and complex project, and despite my best efforts, I might have overlooked or misstated some details unintentionally. Managing all aspects of such a comprehensive system is challenging, and errors or omissions can happen. I sincerely apologize if I missed something or if anything is unclear. Your understanding and feedback are genuinely appreciated, and I thank you for taking the time to review this documentation.
 
 ## Credits
 
