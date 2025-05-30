@@ -164,6 +164,10 @@ Below is a visual diagram representing the core structure of our database. It il
 **ERD (Entity-Relationship Diagram)**
 ![ERD (Entity-Relationship Diagram)](static/images/screenshots/erdrentapp.png)
 
+## Why I created a custom User model
+
+Even though Django already has a built-in User model, I decided to create my own. I wanted to make the email the main way users log in, and I needed to add some extra fields like full name. By making a custom User model, I can handle user info exactly how I want and make sure the login process fits my app’s requirements better. It gives me more control over user data and how authentication works. where i should add this in my backend section
+
 ## Testing
 
 To validate all python code used in this project, each file was evaluated using the [CI Python Linter](https://pep8ci.herokuapp.com/).
@@ -449,7 +453,9 @@ To everyone involved—Code Institute, assessors, mentors, and the Slack communi
 
 ## Acknowledgment
 
-In this section, I’ve tried to explain the core functionalities of the backend—how it integrates with the frontend and enables the application to run smoothly. Please understand that this is a large and complex project, and despite my best efforts, I might have overlooked or misstated some details unintentionally. Managing all aspects of such a comprehensive system is challenging, and errors or omissions can happen. I sincerely apologize if I missed something or if anything is unclear. Your understanding and feedback are genuinely appreciated, and I thank you for taking the time to review this documentation.
+Building this backend was quite the journey. It’s a large and complex system, and I know I might have missed or overlooked some details along the way—those little bugs or omissions that happen when you're managing so many moving parts. Despite my best efforts and multiple reviews, I understand that perfection is hard, and mistakes can happen. I sincerely apologize if I missed anything or if parts here aren’t as clear as they should be.
+
+I’m grateful for the support I received during this process, and I’m always open to feedback and improvements. If you spot any issues or have suggestions, please feel free to reach out. This project is a work in progress, and I’m committed to refining it further.
 
 ## Credits
 
@@ -460,4 +466,3 @@ My heartfelt appreciation also goes to my wife, Fatty, and my younger brother, M
 A special thanks to my mentor, [Iuliia Konovalova](https://github.com/IuliiaKonovalova), for your continuous mentorship and insightful advice. Your support has truly made a positive impact on my learning journey.
 
 Lastly, I want to acknowledge the creators of [GitHub](https://github.com/), whose platform has transformed collaboration and coding education. It’s more than a tool—it’s been a vital part of my growth as a developer.
-
