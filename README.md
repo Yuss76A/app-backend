@@ -1,5 +1,9 @@
 # Happy Rental Jönköping - API 
 
+## Purpose & System Overview
+
+The backend provides a RESTful API to manage all data associated with the Happy Rental platform, including user authentication, vehicle listings, bookings, reviews, and contact messages. It facilitates secure data transactions between the frontend and the database, ensuring users can browse vehicles, make reservations, submit reviews, and contact staff seamlessly. The system enforces permissions to protect user data and prevent unauthorized modifications, supporting both public access (e.g., viewing cars, reviews) and protected actions (e.g., creating bookings, posting reviews). 
+
 ## Introduction 
 
 Welcome to Happy Rental Jönköping!
@@ -87,6 +91,37 @@ Here, you can find the detailed user stories that support the backend functional
 
 Additionally, I created stories related to the frontend—explicitly labeled as such—to ensure that all key features and user experiences were considered during development. These frontend stories helped me ensure that no important aspect was overlooked, even if some of them overlap with backend functionalities. This integrated approach helped build a comprehensive, user-centered application.
 
+## API Documentation & Testing
+
+#### API Endpoints
+
+| URL | Method | Description | Permissions | Sample Request | Sample Response |
+| --- | --- | --- | --- | --- | --- |
+| /register/ | POST | Register a new user | Public | `{ "email": "user@example.com", "password": "Password123", "full_name": "John Doe" }` | `{ "token": "abcd1234", "user": {...} }` |
+| /login/ | POST | User login | Public | `{ "email": "user@example.com", "password": "Password123" }` | `{ "token": "abcd1234" }` |
+| /cars/ | GET | List available cars | Public | — | `[ { "id": 1, "name": "Kia Optima", "price_per_day": 50, ... }, ... ]` |
+| /booked-dates/ | POST | Create a booking | Authenticated | `{ "car": 1, "start_date": "2025-07-01", "end_date": "2025-07-05" }` | `{ "reservation_number": "XYZ789", ... }` |
+| /reviews/ | GET | View reviews | Public | — | `[ { "id": 1, "user": null, "rating": 4, "comment": "Great car!" }, ... ]`<br>**Note:** Users can submit reviews anonymously; the user info is **not shown publicly** to protect privacy. |
+| /reviews/ | POST | Submit review | Authenticated | `{ "rating": 5, "comment": "Excellent!" }` | `{ "id": 10, ... }` |
+
+#### Backend API Testing Summary
+
+| Endpoint                 | Method | Auth Required | Admin Required | Test Case                      | Expected Result       |
+|--------------------------|--------|---------------|-----------------|--------------------------------|-----------------------|
+| `/register/`             | POST   | No            | No              | Valid registration data        | 201 Created + Token   |
+| `/login/`                | POST   | No            | No              | Correct email/password         | 200 OK + Token        |
+| `/cars/`                 | GET    | No            | No              | List all cars                  | 200 OK                |
+| `/cars/`                 | POST   | Yes           | Yes             | Add new car as admin            | 201 Created           |
+| `/cars/<id>/`            | DELETE | Yes           | Yes             | Delete car as admin             | 204 No Content        |
+| `/carimages/`            | GET    | No            | No              | List all images                | 200 OK                |
+| `/carimages/`            | POST   | Yes           | Yes             | Upload image as admin           | 201 Created           |
+| `/booked-dates/`         | POST   | Yes           | No              | Valid booking as user           | 201 Created           |
+| `/booked-dates/<id>/`    | DELETE | Yes           | Owner/Admin     | Delete own booking             | 204 No Content        |
+| `/users/<id>/`           | PATCH  | Yes           | Self/Admin      | Update User Information (Email, Name)             | 200 OK                |
+| `/reviews/`              | POST   | Yes           | No              | Submit review as user           | 201 Created           |
+| `/reviews/<id>/`         | DELETE | Yes           | Owner/Admin     | Delete own review              | 204 No Content        |
+| `/contact/`              | POST   | No            | No              | Submit contact form            | 201 Created           |
+
 ## Models and CRUD Breakdown
 
 | Model        | Endpoints                     | Create   | Retrieve | Update   | Delete   | Filters                     | Text Search | Permissions                     |
@@ -169,6 +204,10 @@ Below is a visual diagram representing the core structure of our database. It il
 Even though Django already has a built-in User model, I decided to create my own. I wanted to make the email the main way users log in, and I needed to add some extra fields like full name. By making a custom User model, I can handle user info exactly how I want and make sure the login process fits my app’s requirements better. It gives me more control over user data and how authentication works. where i should add this in my backend section
 
 ## Testing
+
+#### Code Quality & Best Practices
+
+The backend code adheres to PEP8 standards and passes linting checks using tools like flake8 and pylint. The project is organized into modular, well-structured files, with descriptive comments and extensive documentation strings to enhance readability and maintainability. The code follows best practices, including the DRY principle, and all comments clarify complex logic and decisions.
 
 To validate all python code used in this project, each file was evaluated using the [CI Python Linter](https://pep8ci.herokuapp.com/).
 
@@ -259,24 +298,6 @@ Carbooking Files
 **Carbooking/Admin**
 ![Carbooking/Admin](static/images/screenshots/carbookingadminpage.png)
 
-## Backend API Testing Summary
-
-| Endpoint                 | Method | Auth Required | Admin Required | Test Case                      | Expected Result       |
-|--------------------------|--------|---------------|-----------------|--------------------------------|-----------------------|
-| `/register/`             | POST   | No            | No              | Valid registration data        | 201 Created + Token   |
-| `/login/`                | POST   | No            | No              | Correct email/password         | 200 OK + Token        |
-| `/cars/`                 | GET    | No            | No              | List all cars                  | 200 OK                |
-| `/cars/`                 | POST   | Yes           | Yes             | Add new car as admin            | 201 Created           |
-| `/cars/<id>/`            | DELETE | Yes           | Yes             | Delete car as admin             | 204 No Content        |
-| `/carimages/`            | GET    | No            | No              | List all images                | 200 OK                |
-| `/carimages/`            | POST   | Yes           | Yes             | Upload image as admin           | 201 Created           |
-| `/booked-dates/`         | POST   | Yes           | No              | Valid booking as user           | 201 Created           |
-| `/booked-dates/<id>/`    | DELETE | Yes           | Owner/Admin     | Delete own booking             | 204 No Content        |
-| `/users/<id>/`           | PATCH  | Yes           | Self/Admin      | Update User Information (Email, Name)             | 200 OK                |
-| `/reviews/`              | POST   | Yes           | No              | Submit review as user           | 201 Created           |
-| `/reviews/<id>/`         | DELETE | Yes           | Owner/Admin     | Delete own review              | 204 No Content        |
-| `/contact/`              | POST   | No            | No              | Submit contact form            | 201 Created           |
-
 ## Manual Testing Summary - Backend CRUD Operations
 
 Extensive manual testing was performed on all CRUD functionalities across the backend system.
@@ -301,6 +322,11 @@ This comprehensive manual testing confirmed that all CRUD workflows operate reli
 This section details the steps taken to configure the project for deployment:
 
 ## Development and Deployment
+
+#### Security & Permissions
+
+All sensitive data such as database URLs, secret keys, and API keys are stored securely in the env.py file, which is included in .gitignore and never committed.  
+The API communicates over HTTPS to ensure data security during transmission. Permissions are enforced via Django REST Framework's permission classes, ensuring that only owners can modify their own data, while admins have full access.
 
 ### Development
 
