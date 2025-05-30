@@ -196,7 +196,7 @@ Additionally, I created stories related to the frontend—explicitly labeled as 
 
 Below is a visual diagram representing the core structure of our database. It illustrates how the main entities—such as Cars, Bookings, Users, and Reviews—are interconnected. This ERD provides an easy-to-understand overview of how data is organized and related within the system, helping to visualize the relationships and dependencies that support the application's functionality.
 
-**ERD (Entity-Relationship Diagram)**
+**ERD (Entity-Relationship Diagram)** <br>
 ![ERD (Entity-Relationship Diagram)](static/images/screenshots/erdrentapp.png)
 
 ## Why I created a custom User model
@@ -205,13 +205,23 @@ Even though Django already has a built-in User model, I decided to create my own
 
 ## Testing
 
+#### Automated Testing Results
+
+This section provides an overview of the automated tests I implemented to verify the core registration functionality of the backend API. It includes screenshots showing the test code and the successful results, demonstrating that user registration works reliably. These tests help ensure key features function as expected and support code quality maintenance.
+
+**Test Code** <br>
+![Test Code](static/images/screenshots/testcode.png)
+
+**Test Results** <br>
+![Test Results](static/images/screenshots/testresults.png)
+
 #### Code Quality & Best Practices
 
 The backend code adheres to PEP8 standards and passes linting checks using tools like flake8 and pylint. The project is organized into modular, well-structured files, with descriptive comments and extensive documentation strings to enhance readability and maintainability. The code follows best practices, including the DRY principle, and all comments clarify complex logic and decisions.
 
 To validate all python code used in this project, each file was evaluated using the [CI Python Linter](https://pep8ci.herokuapp.com/).
 
-**Backendapp/Settings**
+**Backendapp/Settings** <br>
 ![Backendapp/Settings](static/images/screenshots/backendappsettingspage.png)
 
 Note on AUTH_PASSWORD_VALIDATORS:
@@ -220,83 +230,89 @@ Note on AUTH_PASSWORD_VALIDATORS:
 
 You can safely leave these validators as-is in your settings file, as they are a standard part of Django's security features and do not pose any issues.
 
-**Backendapp/WSGI**
+**Backendapp/WSGI** <br>
 ![Backendapp/WSGI](static/images/screenshots/backendappwsgipage.png)
 
-**Backendapp/Urls**
+**Backendapp/Urls** <br>
 ![Backendapp/Urls](static/images/screenshots/backendappurlspage.png)
 
-**Backendapp/ASGI**
+**Backendapp/ASGI** <br>
 ![Backendapp/ASGI](static/images/screenshots/backenappasgipage.png)
 
 Reviews Files
 
-**Reviews/Views**
+**Reviews/Views** <br>
 ![Reviews/Views](static/images/screenshots/reviewsviewspage.png)
 
-**Reviews/Urls**
+**Reviews/Urls** <br>
 ![Reviews/Urls](static/images/screenshots/reviewsurlspage.png)
 
-**Reviews/Serializers**
+**Reviews/Serializers** <br>
 ![Reviews/Serializers](static/images/screenshots/reviewsserializerspage.png)
 
-**Reviews/Permissions**
+**Reviews/Permissions** <br>
 ![Reviews/Permissions](static/images/screenshots/reviewspermissionspage.png)
 
-**Reviews/Pagination**
+**Reviews/Pagination** <br>
 ![Reviews/Pagination](static/images/screenshots/reviewspaginationpage.png)
 
-**Reviews/Models**
+**Reviews/Models** <br>
 ![Reviews/Models](static/images/screenshots/reviewsmodelspage.png)
 
-**Reviews/Apps**
-![Reviews/Apps](static/images/screenshots/reviewsappspage.png)
+**Reviews/Admin** <br>
+![Reviews/Admin](static/images/screenshots/reviewsadmin.png)
+
+**Reviews/Apps** <br>
+![Reviews/Apps](static/images/screenshots/reviewsapp.png)
 
 Contact Files
 
-**Contact/Views**
+**Contact/Views** <br>
 ![Contact/Views](static/images/screenshots/contactviewspage.png)
 
-**Contact/Urls**
+**Contact/Urls** <br>
 ![Contact/Urls](static/images/screenshots/contacturlspage.png)
 
-**Contact/Serializers**
+**Contact/Serializers** <br>
 ![Contact/Serializers](static/images/screenshots/contactserializerspage.png)
 
-**Contact/Models**
+**Contact/Models** <br>
 ![Contact/Models](static/images/screenshots/contactmodelspage.png)
 
-**Contact/Apps**
+**Contact/Apps** <br>
 ![Contact/Apps](static/images/screenshots/contactappspage.png)
 
-**Contact/Admin**
+**Contact/Admin** <br>
 ![Contact/Admin](static/images/screenshots/contactadminpage.png)
 
 Carbooking Files
 
-**Carbooking/Views**
+**Carbooking/Views** <br>
 ![Carbooking/Views](static/images/screenshots/carbookingviewspage.png)
 
-**Carbooking/Urls**
+**Carbooking/Urls** <br>
 ![Carbooking/Urls](static/images/screenshots/carbookingurlspage.png)
 
-**Carbooking/Serializers**
+**Carbooking/Serializers** <br>
 ![Carbooking/Serializers](static/images/screenshots/carbookingserailizerspage.png)
 
-**Carbooking/Permissions**
+**Carbooking/Permissions** <br>
 ![Carbooking/Permissions](static/images/screenshots/carbookingpermissionspage.png)
 
-**Carbooking/Auth_Backend**
+**Carbooking/Auth_Backend** <br>
 ![Carbooking/Auth_Backend](static/images/screenshots/carbookingauthbackendpage.png)
 
-**Carbooking/Apps**
+**Carbooking/Apps** <br>
 ![Carbooking/Apps](static/images/screenshots/carbookingapppage.png)
 
-**Carbooking/Models**
+**Carbooking/Models** <br>
 ![Carbooking/Models](static/images/screenshots/carbookingmodelspage.png)
 
-**Carbooking/Admin**
+**Carbooking/Admin** <br>
 ![Carbooking/Admin](static/images/screenshots/carbookingadminpage.png)
+
+**Carbooking/Test** <br>
+![Carbooking/Test](static/images/screenshots/carbookingtest.png)
 
 ## Manual Testing Summary - Backend CRUD Operations
 

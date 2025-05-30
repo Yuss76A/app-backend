@@ -254,7 +254,7 @@ class Register(generics.CreateAPIView):
             authentication token.
         """
         super().create(request, *args, **kwargs)
-        return Response(self.response_data)
+        return Response(data=self.response_data, status=201)
 
 
 # Login view
