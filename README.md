@@ -133,6 +133,14 @@ Additionally, I created stories related to the frontend—explicitly labeled as 
 | Contact      | `/contact/`<br>`/contact/:id/`| yes      | yes      | no       | yes      | no                          | no          | Admin-only for view/delete       |
 | Review       | `/reviews/`<br>`/reviews/:id/`| yes      | yes      | yes      | yes      | by rating/user/date         | no          | Owner or Admin for modifications |
 
+## Unique Booking Model: The Reservation Number Feature
+
+In this project, I created a custom Booking (or BookedDate) model that automatically generates a reservation number each time a new booking is created. This reservation number acts as a unique identifier for each reservation, providing several benefits:
+
+- Simplifies Identification: Both users and administrators can refer to bookings easily using the reservation number instead of internal database IDs.
+- Enhances User Experience: Clear, human-readable reservation numbers improve communication and support.
+- Facilitates Management: Simplifies tracking, reporting, and handling bookings on the administrative side.
+
 ## Database Models
 
 - Here's a quick overview of the main database models used in this project and their basic fields. These models define how data is structured and related in the backend database.
