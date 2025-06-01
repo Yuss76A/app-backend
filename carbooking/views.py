@@ -85,7 +85,7 @@ class BookedDateList(generics.ListCreateAPIView):
     """
     queryset = BookedDate.objects.all()
     serializer_class = BookedDateSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
