@@ -230,7 +230,6 @@ class Register(generics.CreateAPIView):
         user = serializer.save()
         token, created = Token.objects.get_or_create(user=user)
 
-        # Prepare response data
         self.response_data = {
             "user": {
                 "id": user.id,
