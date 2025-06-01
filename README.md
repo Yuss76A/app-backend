@@ -11,13 +11,13 @@ This is a local company dedicated to providing convenient car and RV van rentals
 
 I’m excited to share the features and ideas behind this project with you!
 
-![API-Backend](static/images/screenshots/apiimage.png)
-
 ## Explanation of Backend Functionality
 
 All data displayed and interactions performed on the frontend—such as browsing cars, viewing descriptions and images, making bookings, and sending messages—are processed and managed through this backend API.  
 
 Authorized personnel can access this backend to manage vehicle listings, update descriptions and images, view and handle bookings, and respond to messages. Thus, the backend serves as the central hub for all data management, ensuring that the frontend reflects real-time information and that user interactions are securely processed.
+
+![API-Backend](static/images/screenshots/imageapi.png)
 
 [Happy Rental Backend - API live site](https://carbookingbackend-df57468af270.herokuapp.com/)
 
