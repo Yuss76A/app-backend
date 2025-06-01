@@ -174,6 +174,11 @@ REST_FRAMEWORK = {
     ],
 }
 
+if 'DEV' not in os.environ:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+
 
 AUTH_USER_MODEL = 'carbooking.User'
 AUTHENTICATION_BACKENDS = [
