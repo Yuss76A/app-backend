@@ -507,6 +507,14 @@ Building this backend was quite the journey. It’s a large and complex system, 
 
 I’m grateful for the support I received during this process, and I’m always open to feedback and improvements. If you spot any issues or have suggestions, please feel free to reach out. This project is a work in progress, and I’m committed to refining it further.
 
+## Assessment Linkage
+
+This project demonstrates the following:
+
+- **LO3:** The backend exposes RESTful APIs developed with Django Rest Framework, following best practices in data serialization, permission management, and data modeling. It ensures reliable, secure data handling and supports communication with the frontend.
+- **LO1 & LO2:** The backend data models and API structure facilitate maintainable and well-organized data management, aligning with best backend development practices and supporting the system's overall functionality.
+- **LO4:** The backend provides the APIs that the frontend consumes for performing CRUD operations, user authentication, and data retrieval, enabling dynamic interaction within the application.
+
 ## Credits
 
 I am deeply grateful to [CodeInstitute](https://codeinstitute.net/ "Code Institute") and their supportive Slack community of mentors and fellow learners. Their guidance, encouragement, and expertise have been invaluable in helping me navigate this project and achieve my goals.
